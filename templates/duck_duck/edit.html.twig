@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit DuckDuck{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="text-center">Edit DuckDuck</h1><br>
+
+        {{ include('duck_duck/_form.html.twig', {'button_label': 'Update'}) }}
+
+        {{ include('duck_duck/_delete_form.html.twig') }}
+    </div>
+{% endblock %}

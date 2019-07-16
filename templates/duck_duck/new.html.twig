@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New DuckDuck{% endblock %}
+
+{% block body %}
+    <h1>Create new DuckDuck</h1>
+
+    {{ include('duck_duck/_form.html.twig') }}
+
+    <a href="{{ path('duck_duck_index') }}">back to list</a>
+{% endblock %}
