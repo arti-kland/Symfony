@@ -2,19 +2,19 @@
 
 namespace App\Security\Voter;
 
-use App\Entity\Quack;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\User\UserInterface;
+use App\Entity\DuckDuck;
 
-class QuackVoter extends Voter
+class DuckDuckVoter extends Voter
 {
     protected function supports($attribute, $subject)
     {
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
-        return in_array($attribute, ['quack_edit'])
-            && $subject instanceof Quack;
+        return in_array($attribute, ['duck_new', 'duck_edit', 'duck_view', 'duck_delete'])
+            && $subject instanceof DuckDuck;
     }
 
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
@@ -27,11 +27,25 @@ class QuackVoter extends Voter
 
         // ... (check conditions and return true to grant permission) ...
         switch ($attribute) {
-            case 'quack_edit':
-                // logic to determine if the user can EDIT
+            case 'duck_new':
 
-                return in_array('ROLE_ADMIN', $user->getRoles()) || $user->getDuckname() == $subject->getAuthor();
-                // return true or false
+                return  in_array('ROLE_ADMIN', $user->getRoles());
+
+                break;
+            case 'duck_edit':
+
+                return in_array('ROLE_ADMIN', $user->getRoles()) || $user->getId() == $subject->getId();
+
+                break;
+            case 'duck_view':
+
+                return  in_array('ROLE_ADMIN', $user->getRoles()) || $user->getId() == $subject->getId();
+
+                break;
+            case 'duck_delete':
+
+                return  in_array('ROLE_ADMIN', $user->getRoles()) || $user->getId() == $subject->getId();
+
                 break;
         }
 

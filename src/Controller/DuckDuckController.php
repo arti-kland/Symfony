@@ -30,6 +30,9 @@ class DuckDuckController extends AbstractController
      */
     public function new(Request $request): Response
     {
+
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $duckDuck = new DuckDuck();
         $form = $this->createForm(DuckDuckType::class, $duckDuck);
         $form->handleRequest($request);
@@ -39,7 +42,7 @@ class DuckDuckController extends AbstractController
             $entityManager->persist($duckDuck);
             $entityManager->flush();
 
-                return $this->redirectToRoute('quack_index');
+                return $this->redirectToRoute('duck_duck_index');
 
 
         }
@@ -55,6 +58,8 @@ class DuckDuckController extends AbstractController
      */
     public function show(DuckDuck $duckDuck): Response
     {
+        $this->denyAccessUnlessGranted('duck_edit', $duckDuck);
+
         return $this->render('duck_duck/show.html.twig', [
             'duck_duck' => $duckDuck,
         ]);
@@ -65,6 +70,8 @@ class DuckDuckController extends AbstractController
      */
     public function edit(Request $request, DuckDuck $duckDuck): Response
     {
+        $this->denyAccessUnlessGranted('duck_edit', $duckDuck);
+
         $form = $this->createForm(DuckDuckType::class, $duckDuck);
         $form->handleRequest($request);
 
@@ -86,12 +93,14 @@ class DuckDuckController extends AbstractController
      */
     public function delete(Request $request, DuckDuck $duckDuck): Response
     {
+        $this->denyAccessUnlessGranted('duck_delete', $duckDuck);
+
         if ($this->isCsrfTokenValid('delete'.$duckDuck->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($duckDuck);
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('quack_index');
+        return $this->redirectToRoute('duck_duck_index');
     }
 }

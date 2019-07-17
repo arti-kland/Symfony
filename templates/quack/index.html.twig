@@ -12,6 +12,9 @@
                 <th>Id</th>
                 <th>Content</th>
                 <th>CreatedAt</th>
+                <th>Author</th>
+                <th>Image</th>
+                <th>Tags</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -21,6 +24,9 @@
                 <td>{{ quack.id }}</td>
                 <td>{{ quack.content }}</td>
                 <td>{{ quack.createdAt ? quack.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ quack.author }}</td>
+                <td>{{ quack.image }}</td>
+                <td>{{ quack.tags }}</td>
                 <td>
                     <a class="btn btn-success" href="{{ path('quack_show', {'id': quack.id}) }}">show</a>
                     {% if is_granted('ROLE_USER') %}

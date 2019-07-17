@@ -63,6 +63,8 @@ class QuackController extends AbstractController
      */
     public function edit(Request $request, Quack $quack): Response
     {
+        $this->denyAccessUnlessGranted('quack_edit', $quack);
+
         $form = $this->createForm(QuackType::class, $quack);
         $form->handleRequest($request);
 
@@ -87,6 +89,8 @@ class QuackController extends AbstractController
      */
     public function delete(Request $request, Quack $quack): Response
     {
+        $this->denyAccessUnlessGranted('quack_edit', $quack);
+
         if ($this->isCsrfTokenValid('delete'.$quack->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($quack);
