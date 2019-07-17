@@ -13,20 +13,20 @@
                     <a class="nav-link" href="/quack">Quack <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="/register">Register</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="/login">Login</a>
                 </li>
+                {% if is_granted('ROLE_USER') %}
                 <li class="nav-item">
                     <a class="nav-link" href="/logout">Logout</a>
                 </li>
-                {% if is_granted('ROLE_USER') %}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('duck_duck_edit', {'id': app.user.id}) }}">Mon Compte</a>
                 </li>
                 {% endif %}
             </ul>
-            <span class="navbar-text">
-      Navbar text with an inline element
-    </span>
         </div>
     </nav>
         {% block body %}{% endblock %}

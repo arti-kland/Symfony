@@ -3,10 +3,12 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\DuckDuckRepository")
+ * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
  */
 class DuckDuck implements UserInterface
 {
@@ -41,6 +43,11 @@ class DuckDuck implements UserInterface
      * @ORM\Column(type="string", length=255)
      */
     private $password;
+
+    /**
+     * @ORM\Column(type="json")
+     */
+    private $role = ['ROLE_USER'];
 
     public function getId(): ?int
     {
@@ -123,7 +130,7 @@ class DuckDuck implements UserInterface
      */
     public function getRoles()
     {
-        return array('ROLE_USER');
+        return $this -> role;
     }
 
     /**
@@ -157,5 +164,13 @@ class DuckDuck implements UserInterface
     public function eraseCredentials()
     {
         // TODO: Implement eraseCredentials() method.
+    }
+
+    /**
+     * @return mixed
+     */
+    public function has_role($role)
+    {
+
     }
 }

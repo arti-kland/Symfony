@@ -3,7 +3,8 @@
 {% block title %}Quack index{% endblock %}
 
 {% block body %}
-    <h1>Quack index</h1>
+    <div class="container">
+    <h1 class="text-center">QuackNet</h1>
 
     <table class="table">
         <thead>
@@ -21,8 +22,10 @@
                 <td>{{ quack.content }}</td>
                 <td>{{ quack.createdAt ? quack.createdAt|date('Y-m-d H:i:s') : '' }}</td>
                 <td>
-                    <a href="{{ path('quack_show', {'id': quack.id}) }}">show</a>
-                    <a href="{{ path('quack_edit', {'id': quack.id}) }}">edit</a>
+                    <a class="btn btn-success" href="{{ path('quack_show', {'id': quack.id}) }}">show</a>
+                    {% if is_granted('ROLE_USER') %}
+                    <a class="btn btn-success" href="{{ path('quack_edit', {'id': quack.id}) }}">edit</a>
+                    {% endif %}
                 </td>
             </tr>
         {% else %}
@@ -32,6 +35,8 @@
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('quack_new') }}">Create new</a>
+        {% if is_granted('ROLE_USER') %}
+    <a class="btn btn-success" href="{{ path('quack_new') }}">Create new</a>
+        {% endif %}
+    </div>
 {% endblock %}

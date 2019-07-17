@@ -38,11 +38,9 @@ class DuckDuckController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($duckDuck);
             $entityManager->flush();
-            if(is_granted('ROLE_USER') ){
-            return $this->redirectToRoute('quack_index');
-            } else {
-                return $this->redirectToRoute('duck_duck_index');
-            }
+
+                return $this->redirectToRoute('quack_index');
+
 
         }
 
@@ -73,7 +71,8 @@ class DuckDuckController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('quack_index');
+                return $this->redirectToRoute('quack_index');
+
         }
 
         return $this->render('duck_duck/edit.html.twig', [
