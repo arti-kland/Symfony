@@ -29,8 +29,8 @@ class QuackVoter extends Voter
         switch ($attribute) {
             case 'quack_edit':
                 // logic to determine if the user can EDIT
-
-                return in_array('ROLE_ADMIN', $user->getRoles()) || $user->getDuckname() == $subject->getAuthor();
+//dd($subject->getAuthor()->getDuckname());
+                return in_array('ROLE_ADMIN', $user->getRoles()) || $user->getDuckname() == $subject->getAuthor()->getDuckname();
                 // return true or false
                 break;
         }

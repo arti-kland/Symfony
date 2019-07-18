@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * @Route("/duckduck")
@@ -42,7 +43,7 @@ class DuckDuckController extends AbstractController
             $entityManager->persist($duckDuck);
             $entityManager->flush();
 
-                return $this->redirectToRoute('duck_duck_index');
+            return $this->redirectToRoute('duck_duck_index');
 
 
         }
@@ -68,23 +69,46 @@ class DuckDuckController extends AbstractController
     /**
      * @Route("/{id}/edit", name="duck_duck_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, DuckDuck $duckDuck): Response
+    public function edit(Request $request, DuckDuck $duckDuck, UserPasswordEncoderInterface $passwordEncoder): Response
     {
+        $message = '';
         $this->denyAccessUnlessGranted('duck_edit', $duckDuck);
 
         $form = $this->createForm(DuckDuckType::class, $duckDuck);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            if (empty($form->get('currentPassword')->getData())) {
+                $this->getDoctrine()->getManager()->flush();
+                $this->addFlash(
+                    'info',
+                    'Your changes were saved !'
+                );
+            }
+            else if ($passwordEncoder->isPasswordValid($this->getUser(), $form->get('currentPassword')->getData())) {
+                $duckDuck->setPassword(
+                    $passwordEncoder->encodePassword(
+                        $duckDuck,
+                        $form->get('plainPassword')->getData()
+                    ));
+                $this->getDoctrine()->getManager()->flush();
+                $this->addFlash(
+                    'success',
+                    'Your changes were saved !'
+                );
+            } else {
+                $this->addFlash(
+                    'warning',
+                    'invalid password !'
+                );
+            }
 
-                return $this->redirectToRoute('quack_index');
-
+            return $this->redirectToRoute('quack_index');
         }
-
         return $this->render('duck_duck/edit.html.twig', [
+            'message' => $message,
             'duck_duck' => $duckDuck,
-            'form' => $form->createView(),
+            'form' => $form->createView()
         ]);
     }
 
@@ -95,7 +119,7 @@ class DuckDuckController extends AbstractController
     {
         $this->denyAccessUnlessGranted('duck_delete', $duckDuck);
 
-        if ($this->isCsrfTokenValid('delete'.$duckDuck->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $duckDuck->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($duckDuck);
             $entityManager->flush();

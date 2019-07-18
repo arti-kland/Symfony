@@ -114,6 +114,7 @@ class DuckDuck implements UserInterface
         return $this;
     }
 
+
     /**
      * Returns the roles granted to the user.
      *

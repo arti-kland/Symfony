@@ -13,7 +13,6 @@ class QuackType extends AbstractType
     {
         $builder
             ->add('content')
-            ->add('author')
             ->add('image')
             ->add('createdAt')
             ->add('tags')

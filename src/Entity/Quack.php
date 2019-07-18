@@ -26,10 +26,6 @@ class Quack
      */
     private $createdAt;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $author;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -40,6 +36,12 @@ class Quack
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $tags;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\duckduck")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $author;
 
     public function getId(): ?int
     {
@@ -70,17 +72,6 @@ class Quack
         return $this;
     }
 
-    public function getAuthor(): ?string
-    {
-        return $this->author;
-    }
-
-    public function setAuthor(string $author): self
-    {
-        $this->author = $author;
-
-        return $this;
-    }
 
     public function getImage(): ?string
     {
@@ -102,6 +93,18 @@ class Quack
     public function setTags(?string $tags): self
     {
         $this->tags = $tags;
+
+        return $this;
+    }
+
+    public function getAuthor(): ?duckduck
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?duckduck $author): self
+    {
+        $this->author = $author;
 
         return $this;
     }

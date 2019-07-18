@@ -5,7 +5,13 @@
 {% block body %}
     <div class="container">
     <h1 class="text-center">QuackNet</h1>
-
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert-{{ label }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
     <table class="table">
         <thead>
             <tr>
@@ -24,7 +30,7 @@
                 <td>{{ quack.id }}</td>
                 <td>{{ quack.content }}</td>
                 <td>{{ quack.createdAt ? quack.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ quack.author }}</td>
+                <td>{{ quack.author.duckname }}</td>
                 <td>{{ quack.image }}</td>
                 <td>{{ quack.tags }}</td>
                 <td>
