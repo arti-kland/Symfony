@@ -26,7 +26,7 @@
         </thead>
         <tbody>
         {% for quack in quacks %}
-            <tr>
+            <tr class="jumbotron">
                 <td>{{ quack.id }}</td>
                 <td>{{ quack.content }}</td>
                 <td>{{ quack.createdAt ? quack.createdAt|date('Y-m-d H:i:s') : '' }}</td>
@@ -35,7 +35,7 @@
                 <td>{{ quack.tags }}</td>
                 <td>
                     <a class="btn btn-success" href="{{ path('quack_show', {'id': quack.id}) }}">show</a>
-                    {% if is_granted('ROLE_USER') %}
+                    {% if is_granted('ROLE_USER') and is_granted('quack_edit', quack ) %}
                     <a class="btn btn-success" href="{{ path('quack_edit', {'id': quack.id}) }}">edit</a>
                     {% endif %}
                 </td>

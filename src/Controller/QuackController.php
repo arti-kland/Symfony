@@ -22,6 +22,7 @@ class QuackController extends AbstractController
     {
         return $this->render('quack/index.html.twig', [
             'quacks' => $quackRepository->findAll(),
+
         ]);
     }
 
@@ -36,6 +37,7 @@ class QuackController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $quack->setAuthor($this->getUser());
+            $quack->setCreatedAt(new \DateTime('now',(new \DateTimeZone('Europe/Paris'))));
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($quack);
             $entityManager->flush();
@@ -70,6 +72,7 @@ class QuackController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $quack->setCreatedAt(new \DateTime('now',(new \DateTimeZone('Europe/Paris'))));
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('quack_index');
@@ -92,7 +95,7 @@ class QuackController extends AbstractController
     {
         $this->denyAccessUnlessGranted('quack_edit', $quack);
 
-        if ($this->isCsrfTokenValid('delete'.$quack->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $quack->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($quack);
             $entityManager->flush();

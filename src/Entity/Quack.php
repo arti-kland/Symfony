@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -38,10 +40,25 @@ class Quack
     private $tags;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\duckduck")
+     * @ORM\ManyToOne(targetEntity="App\Entity\DuckDuck")
      * @ORM\JoinColumn(nullable=false)
      */
     private $author;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Quack", inversedBy="comments")
+     */
+    private $comment;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Quack", mappedBy="comment")
+     */
+    private $comments;
+
+    public function __construct()
+    {
+        $this->comments = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -105,6 +122,49 @@ class Quack
     public function setAuthor(?duckduck $author): self
     {
         $this->author = $author;
+
+        return $this;
+    }
+
+    public function getComment(): ?self
+    {
+        return $this->comment;
+    }
+
+    public function setComment(?self $comment): self
+    {
+        $this->comment = $comment;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|self[]
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(self $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments[] = $comment;
+            $comment->setComment($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(self $comment): self
+    {
+        if ($this->comments->contains($comment)) {
+            $this->comments->removeElement($comment);
+            // set the owning side to null (unless already changed)
+            if ($comment->getComment() === $this) {
+                $comment->setComment(null);
+            }
+        }
 
         return $this;
     }

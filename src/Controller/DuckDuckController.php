@@ -71,7 +71,6 @@ class DuckDuckController extends AbstractController
      */
     public function edit(Request $request, DuckDuck $duckDuck, UserPasswordEncoderInterface $passwordEncoder): Response
     {
-        $message = '';
         $this->denyAccessUnlessGranted('duck_edit', $duckDuck);
 
         $form = $this->createForm(DuckDuckType::class, $duckDuck);
@@ -102,11 +101,9 @@ class DuckDuckController extends AbstractController
                     'invalid password !'
                 );
             }
-
             return $this->redirectToRoute('quack_index');
         }
         return $this->render('duck_duck/edit.html.twig', [
-            'message' => $message,
             'duck_duck' => $duckDuck,
             'form' => $form->createView()
         ]);
