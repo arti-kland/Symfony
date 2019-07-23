@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Service\FileUploader;
 
 /**
  * @Route("/quack")
@@ -21,23 +22,34 @@ class QuackController extends AbstractController
     public function index(QuackRepository $quackRepository): Response
     {
         return $this->render('quack/index.html.twig', [
-            'quacks' => $quackRepository->findAll(),
+            'quacks' => $quackRepository->findBy(['parent' => null]),
 
         ]);
     }
 
     /**
      * @Route("/new", name="quack_new", methods={"GET","POST"})
+     * @Route("/{parent}/comment/new", name="quack_new_comment", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(Request $request, FileUploader $fileUploader, ?Quack $parent): Response
     {
         $quack = new Quack();
+        $quack->setParent($parent);
+//        dump($quack, $parent);
         $form = $this->createForm(QuackType::class, $quack);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $quack->setAuthor($this->getUser());
+        //Uploader Image
+            $file = $quack->getImageFile();
+            if ($file == !null) {
+                $fileName = $fileUploader->upload($file);
+                $quack->setImage('/images/' . $fileName);
+            }
             $quack->setCreatedAt(new \DateTime('now',(new \DateTimeZone('Europe/Paris'))));
+
+        //flush to BDD
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($quack);
             $entityManager->flush();
@@ -48,6 +60,7 @@ class QuackController extends AbstractController
         return $this->render('quack/new.html.twig', [
             'quack' => $quack,
             'form' => $form->createView(),
+            "parent"=>$parent,
         ]);
     }
 
@@ -64,7 +77,7 @@ class QuackController extends AbstractController
     /**
      * @Route("/{id}/edit", name="quack_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, Quack $quack): Response
+    public function edit(Request $request, Quack $quack, FileUploader $fileUploader): Response
     {
         $this->denyAccessUnlessGranted('quack_edit', $quack);
 
@@ -73,6 +86,14 @@ class QuackController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $quack->setCreatedAt(new \DateTime('now',(new \DateTimeZone('Europe/Paris'))));
+            //Uploader Image
+
+            $file = $quack->getImageFile();
+            if ($file == !null) {
+//            dump($file);
+            $fileName = $fileUploader->upload($file);
+            $quack->setImage('/images/'.$fileName);
+            }
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('quack_index');
@@ -103,4 +124,5 @@ class QuackController extends AbstractController
 
         return $this->redirectToRoute('quack_index');
     }
+
 }

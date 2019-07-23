@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\DuckDuck;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -22,7 +23,7 @@ class DuckDuckType extends AbstractType
                 'disabled' => true])
             ->add('email',TextType::class,[
                 'disabled' => true])
-
+            ->add('imageFile', FileType::class)
             ->add('currentPassword', PasswordType::class, [
                 // instead of being set onto the object directly,
                 // this is read and encoded in the controller

@@ -3,42 +3,50 @@
 {% block title %}Quack{% endblock %}
 
 {% block body %}
-    <h1>Quack</h1>
+    <div class="container">
+        <h1 class="text-center">Quack</h1>
 
-    <table class="table">
-        <tbody>
-        <tr>
-            <th>Id</th>
-            <td>{{ quack.id }}</td>
-        </tr>
-        <tr>
-            <th>Content</th>
-            <td>{{ quack.content }}</td>
-        </tr>
-        <tr>
-            <th>CreatedAt</th>
-            <td>{{ quack.createdAt ? quack.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-        </tr>
-        <tr>
-            <th>Author</th>
-            <td>{{ quack.author.duckname }}</td>
-        </tr>
-        <tr>
-            <th>Image</th>
-            <td>{{ quack.image }}</td>
-        </tr>
-        <tr>
-            <th>Tags</th>
-            <td>{{ quack.tags }}</td>
-        </tr>
-        </tbody>
-    </table>
+        <table class="table">
+            <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ quack.id }}</td>
+            </tr>
+            <tr>
+                <th>Content</th>
+                <td>{{ quack.content }}</td>
+            </tr>
+            <tr>
+                <th>CreatedAt</th>
+                <td>{{ quack.createdAt ? quack.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Author Icon</th>
+                <td><img width="100" height="100" src="{{ quack.author.image }}"></td>
+            </tr>
+            <tr>
+                <th>Author</th>
+                <td>{{ quack.author.duckname }}</td>
+            </tr>
+            <tr>
+                <th>Image</th>
+                <td>{{ quack.image }}</td>
+            </tr>
+            <tr>
+                <th>Tags</th>
+                <td>{% for tag in quack.tags %}
+                        {{ tag }}
+                    {% endfor %}</td>
+            </tr>
+            </tbody>
+        </table>
 
-    <a class="btn btn-success" href="{{ path('quack_index') }}">back to list</a>
+        <a class="btn btn-success" href="{{ path('quack_index') }}">back to list</a>
 
-    {% if is_granted('ROLE_USER') and is_granted('quack_edit', quack ) %}
-    <a class="btn btn-success" href="{{ path('quack_edit', {'id': quack.id}) }}">edit</a>
+        {% if is_granted('ROLE_USER') and is_granted('quack_edit', quack ) %}
+            <a class="btn btn-success" href="{{ path('quack_edit', {'id': quack.id}) }}">edit</a>
 
-    {{ include('quack/_delete_form.html.twig') }}
-    {% endif %}
+            {{ include('quack/_delete_form.html.twig') }}
+        {% endif %}
+    </div>
 {% endblock %}

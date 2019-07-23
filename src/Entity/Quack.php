@@ -5,7 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\QuackRepository")
  */
@@ -30,14 +30,11 @@ class Quack
 
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $image;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $tags;
+
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\DuckDuck")
@@ -46,18 +43,46 @@ class Quack
     private $author;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Quack", inversedBy="comments")
+     * @Assert\Image(mimeTypes={ "image/jpeg"} )
      */
-    private $comment;
+    private $imageFile;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Quack", mappedBy="comment")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Quack", inversedBy="children")
      */
-    private $comments;
+    private $parent;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Quack", mappedBy="parent")
+     */
+    private $children;
+
+    /**
+     * @ORM\Column(type="json_array", nullable=true)
+     */
+    private $tags = [];
+
+    /**
+     * @return mixed
+     */
+    public function getImageFile()
+    {
+        return $this->imageFile;
+    }
+
+    /**
+     * @param mixed $imageFile
+     */
+    public function setImageFile($imageFile): void
+    {
+        $this->imageFile = $imageFile;
+    }
+
+
 
     public function __construct()
     {
-        $this->comments = new ArrayCollection();
+        $this->children = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -90,29 +115,18 @@ class Quack
     }
 
 
-    public function getImage(): ?string
+    public function getImage()
     {
         return $this->image;
     }
 
-    public function setImage(string $image): self
+    public function setImage( $image): self
     {
         $this->image = $image;
 
         return $this;
     }
 
-    public function getTags(): ?string
-    {
-        return $this->tags;
-    }
-
-    public function setTags(?string $tags): self
-    {
-        $this->tags = $tags;
-
-        return $this;
-    }
 
     public function getAuthor(): ?duckduck
     {
@@ -126,14 +140,15 @@ class Quack
         return $this;
     }
 
-    public function getComment(): ?self
+
+    public function getParent(): ?self
     {
-        return $this->comment;
+        return $this->parent;
     }
 
-    public function setComment(?self $comment): self
+    public function setParent(?self $parent): self
     {
-        $this->comment = $comment;
+        $this->parent = $parent;
 
         return $this;
     }
@@ -141,30 +156,42 @@ class Quack
     /**
      * @return Collection|self[]
      */
-    public function getComments(): Collection
+    public function getChildren(): Collection
     {
-        return $this->comments;
+        return $this->children;
     }
 
-    public function addComment(self $comment): self
+    public function addChild(self $child): self
     {
-        if (!$this->comments->contains($comment)) {
-            $this->comments[] = $comment;
-            $comment->setComment($this);
+        if (!$this->children->contains($child)) {
+            $this->children[] = $child;
+            $child->setParent($this);
         }
 
         return $this;
     }
 
-    public function removeComment(self $comment): self
+    public function removeChild(self $child): self
     {
-        if ($this->comments->contains($comment)) {
-            $this->comments->removeElement($comment);
+        if ($this->children->contains($child)) {
+            $this->children->removeElement($child);
             // set the owning side to null (unless already changed)
-            if ($comment->getComment() === $this) {
-                $comment->setComment(null);
+            if ($child->getParent() === $this) {
+                $child->setParent(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getTags(): ?array
+    {
+        return $this->tags ?? [];
+    }
+
+    public function setTags(?array $tags): self
+    {
+        $this->tags = $tags;
 
         return $this;
     }

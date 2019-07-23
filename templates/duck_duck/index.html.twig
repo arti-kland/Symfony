@@ -14,6 +14,7 @@
                 <th>Lastname</th>
                 <th>Duckname</th>
                 <th>Email</th>
+                <th>Image</th>
                 <th>Password</th>
                 <th>actions</th>
             </tr>
@@ -26,6 +27,7 @@
                     <td>{{ duck_duck.lastname }}</td>
                     <td>{{ duck_duck.duckname }}</td>
                     <td>{{ duck_duck.email }}</td>
+                    <td><img class="w-30" src="{{ duck_duck.image }}" alt=""></td>
                     <td>{{ duck_duck.password }}</td>
                     <td>
                         <a class="btn-success" href="{{ path('duck_duck_show', {'id': duck_duck.id}) }}">show</a><br>

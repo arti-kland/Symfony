@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\DuckDuckRepository")
@@ -48,6 +49,11 @@ class DuckDuck implements UserInterface
      * @ORM\Column(type="json")
      */
     private $role = ['ROLE_USER'];
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $image;
 
     public function getId(): ?int
     {
@@ -114,7 +120,26 @@ class DuckDuck implements UserInterface
         return $this;
     }
 
+    /**
+     * @Assert\Image(mimeTypes={ "image/jpeg"} )
+     */
+    private $imageFile;
 
+    /**
+     * @return mixed
+     */
+    public function getImageFile()
+    {
+        return $this->imageFile;
+    }
+
+    /**
+     * @param mixed $imageFile
+     */
+    public function setImageFile($imageFile): void
+    {
+        $this->imageFile = $imageFile;
+    }
     /**
      * Returns the roles granted to the user.
      *
@@ -173,5 +198,17 @@ class DuckDuck implements UserInterface
     public function has_role($role)
     {
 
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): self
+    {
+        $this->image = $image;
+
+        return $this;
     }
 }

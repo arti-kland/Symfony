@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\DuckDuck;
 use App\Form\DuckDuckType;
 use App\Repository\DuckDuckRepository;
+use App\Service\FileUploader;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,7 +30,7 @@ class DuckDuckController extends AbstractController
     /**
      * @Route("/new", name="duck_duck_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(Request $request, FileUploader $fileUploader): Response
     {
 
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
@@ -39,6 +40,12 @@ class DuckDuckController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            //Uploader Image
+            $file = $duckDuck->getImageFile();
+            $fileName = $fileUploader->upload($file);
+            $duckDuck->setImage('/images/'.$fileName);
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($duckDuck);
             $entityManager->flush();
@@ -69,7 +76,7 @@ class DuckDuckController extends AbstractController
     /**
      * @Route("/{id}/edit", name="duck_duck_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, DuckDuck $duckDuck, UserPasswordEncoderInterface $passwordEncoder): Response
+    public function edit(Request $request, DuckDuck $duckDuck, UserPasswordEncoderInterface $passwordEncoder,FileUploader $fileUploader): Response
     {
         $this->denyAccessUnlessGranted('duck_edit', $duckDuck);
 
@@ -78,11 +85,19 @@ class DuckDuckController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             if (empty($form->get('currentPassword')->getData())) {
+
+                //Uploader Image
+                $file = $duckDuck->getImageFile();
+                $fileName = $fileUploader->upload($file);
+                $duckDuck->setImage('/images/'.$fileName);
                 $this->getDoctrine()->getManager()->flush();
                 $this->addFlash(
                     'info',
                     'Your changes were saved !'
                 );
+                $duckDuck->setImageFile(null);
+
+
             }
             else if ($passwordEncoder->isPasswordValid($this->getUser(), $form->get('currentPassword')->getData())) {
                 $duckDuck->setPassword(
@@ -90,18 +105,28 @@ class DuckDuckController extends AbstractController
                         $duckDuck,
                         $form->get('plainPassword')->getData()
                     ));
+
+                //Uploader Image
+                $file = $duckDuck->getImageFile();
+                $fileName = $fileUploader->upload($file);
+                $duckDuck->setImage('/images/'.$fileName);
+
                 $this->getDoctrine()->getManager()->flush();
                 $this->addFlash(
                     'success',
                     'Your changes were saved !'
+
                 );
+                $duckDuck->setImageFile(null);
+
             } else {
                 $this->addFlash(
                     'warning',
                     'invalid password !'
                 );
             }
-            return $this->redirectToRoute('quack_index');
+
+            return $this->redirectToRoute('duck_duck_index');
         }
         return $this->render('duck_duck/edit.html.twig', [
             'duck_duck' => $duckDuck,

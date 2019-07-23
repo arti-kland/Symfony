@@ -6,6 +6,7 @@ use App\Entity\DuckDuck;
 use Doctrine\DBAL\Types\TextType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
@@ -24,6 +25,7 @@ class RegistrationFormType extends AbstractType
             ->add('lastname')
             ->add('duckname')
             ->add('email')
+            ->add('imageFile', FileType::class)
             ->add('plainPassword', RepeatedType::class, [
                 // instead of being set onto the object directly,
                 // this is read and encoded in the controller
