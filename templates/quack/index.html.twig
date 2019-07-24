@@ -3,8 +3,12 @@
 {% block title %}Quack index{% endblock %}
 
 {% block body %}
-    <div class="container">
-        <h1 class="text-center">QuackNet</h1>
+    <div style="background: darkorange">
+    <div class="container" >
+        <h1 class="text-center" style="color: white; font-weight: bold">QuackNet</h1>
+        <div>
+        <img class="mx-auto mb-4 d-block" width="300" height="200" src="{{ asset('images/975f88ac43930b799092277eafdea175.gif') }}">
+        </div>
         {% for label, messages in app.flashes %}
             {% for message in messages %}
                 <div class="alert-{{ label }}">
@@ -14,16 +18,16 @@
         {% endfor %}
 
         {% for quack in quacks %}
-            <div class="card mb-3">
-                <div class="card-header">
-                    <img width="100" height="100" src="{{ quack.author.image }}">
+            <div class="card card-body mb-3" style="border-radius: 0.9% !important;">
+                <div class="card-header" style="background-color: darkgray !important;">
+                    <img style="border-radius:50%" width="100" height="100" src="{{ quack.author.image }}">
                     <p>
                         <small class="text-muted">{{ quack.author.duckname }} à écrit le
                             {{ quack.createdAt ? quack.createdAt|date('Y-m-d H:i:s') : '' }}</small>
                     </p>
                 </div>
                 <div class="card-body">
-                    <p class="card-text">{{ quack.content }}</p>
+                    <p class="card-text" style="color:darkgrey !important;">{{ quack.content }}</p>
 
                 </div>
                 <img src="{{ quack.image }}" class="card-img-top">
@@ -40,14 +44,14 @@
                     <div class="card" id="collapse_{{ quack.id }}">
                         {% for comment in quack.children %}
                             <div class="card-header">
-                                <img width="100" height="100" src="{{ comment.author.image }}">
+                                <img style="border-radius:50%" width="50" height="50" src="{{ comment.author.image }}">
                                 <p>
                                     <small class="text-muted">{{ comment.author.duckname }} à écrit le
                                         {{ comment.createdAt ? comment.createdAt|date('Y-m-d H:i:s') : '' }}</small>
                                 </p>
                             </div>
                             <div class="card-body">
-                                <p>{{ comment.content }}</p>
+                                <p style="color:darkgrey !important;">{{ comment.content }}</p>
                             </div>
                             <div class="card">
                                 <p> Tags :
@@ -85,5 +89,5 @@
             <a class="btn btn-success" href="{{ path('quack_new') }}">Create new</a>
         {% endif %}
     </div>
-
+    </div>
 {% endblock %}

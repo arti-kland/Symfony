@@ -22,19 +22,23 @@ class QuackRepository extends ServiceEntityRepository
     // /**
     //  * @return Quack[] Returns an array of Quack objects
     //  */
-    /*
-    public function findByExampleField($value)
+
+    public function findBySearchBar($value)
     {
-        return $this->createQueryBuilder('q')
-            ->andWhere('q.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('q.id', 'ASC')
+        return $this->createQueryBuilder('quack')
+            ->join('quack.author', 'duckduck')
+            ->addSelect('duckduck')
+            ->orWhere('duckduck.duckname LIKE :val')
+            ->orWhere('quack.tags LIKE :val')
+            ->orWhere('quack.content LIKE :val')
+            ->setParameter('val', "%".$value."%")
+            ->orderBy('quack.id', 'ASC')
             ->setMaxResults(10)
             ->getQuery()
             ->getResult()
         ;
     }
-    */
+
 
 
 //    public function findOneBySomeField($value): ?Quack

@@ -43,7 +43,7 @@ class Quack
     private $author;
 
     /**
-     * @Assert\Image(mimeTypes={ "image/jpeg"} )
+     * @Assert\Image(mimeTypes={ "image/jpeg", "image/png", "image/bpm", "image/gif"} )
      */
     private $imageFile;
 
@@ -53,7 +53,7 @@ class Quack
     private $parent;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Quack", mappedBy="parent")
+     * @ORM\OneToMany(targetEntity="App\Entity\Quack", mappedBy="parent", orphanRemoval=true)
      */
     private $children;
 

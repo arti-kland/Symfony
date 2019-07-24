@@ -5,6 +5,8 @@
 {% block body %}
     <div class="container">
         <h1 class="text-center">Edit DuckDuck</h1><br>
+        <img style="border-radius:50%; border:2px solid darkgray"  width="100" height="100" src="{{ duck_duck.image }} ">
+
 
         {{ include('duck_duck/_form.html.twig', {'button_label': 'Update'}) }}
 

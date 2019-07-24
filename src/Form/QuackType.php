@@ -18,7 +18,8 @@ class QuackType extends AbstractType
             ->add('content')
             ->add('imageFile', FileType::class, [
                 'required' => false,
-            ])->add('tags', TextType::class)
+            ])->add('tags', TextType::class,[
+                'required' => false])
             ->get('tags')->addModelTransformer(new CallbackTransformer(
                 function ($tagsAsArray) {
                     // transform the array to a string
