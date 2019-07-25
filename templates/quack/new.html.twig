@@ -5,12 +5,12 @@
 {% block body %}
     <div class="container">
         {% if parent is not null %}
-            <h1>Create new Comment</h1>
+            <h1 style="color:darkorange; font-weight: bold">Create new Comment</h1>
         {% elseif parent is null %}
-    <h1>Create new Quack</h1>
+            <h1 style="color:darkorange; font-weight: bold">Create new Quack</h1>
         {% endif %}
-    {{ include('quack/_form.html.twig') }}
+        {{ include('quack/_form.html.twig') }}
 
-    <a class="btn-success" href="{{ path('quack_index') }}">back to list</a>
+        <a class="btn-warning" href="{{ path('quack_index') }}">back to list</a>
     </div>
 {% endblock %}

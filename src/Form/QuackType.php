@@ -18,20 +18,19 @@ class QuackType extends AbstractType
             ->add('content')
             ->add('imageFile', FileType::class, [
                 'required' => false,
-            ])->add('tags', TextType::class,[
+            ])->add('tags', TextType::class, [
                 'required' => false])
             ->get('tags')->addModelTransformer(new CallbackTransformer(
                 function ($tagsAsArray) {
                     // transform the array to a string
-/*                    dump($tagsAsArray);*/
+                    /*                    dump($tagsAsArray);*/
                     return implode(', ', $tagsAsArray);
                 },
                 function ($tagsAsString) {
                     // transform the string back to an array
                     return explode(', ', $tagsAsString);
                 }
-            ))
-        ;
+            ));
     }
 
     public function configureOptions(OptionsResolver $resolver)

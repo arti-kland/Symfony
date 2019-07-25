@@ -4,7 +4,7 @@
 
 {% block body %}
     <div class="container">
-        <h1>DuckDuck Index</h1>
+        <h1 style="color: darkorange; font-weight: bold">DuckDuck Index</h1>
 
         <table class="table">
             <thead>
@@ -27,11 +27,11 @@
                     <td>{{ duck_duck.lastname }}</td>
                     <td>{{ duck_duck.duckname }}</td>
                     <td>{{ duck_duck.email }}</td>
-                    <td><img class="w-30" src="{{ duck_duck.image }}" alt=""></td>
+                    <td><img class="w-30" width="100" height="100"  src="{{ duck_duck.image }}" alt=""></td>
                     <td>{{ duck_duck.password }}</td>
                     <td>
-                        <a class="btn-success" href="{{ path('duck_duck_show', {'id': duck_duck.id}) }}">show</a><br>
-                        <a class="btn-success" href="{{ path('duck_duck_edit', {'id': duck_duck.id}) }}">edit</a><br>
+                        <a class="btn-warning" href="{{ path('duck_duck_show', {'id': duck_duck.id}) }}">show</a><br>
+                        <a class="btn-warning" href="{{ path('duck_duck_edit', {'id': duck_duck.id}) }}">edit</a><br>
                     </td>
                 </tr>
             {% else %}
@@ -41,6 +41,6 @@
             {% endfor %}
             </tbody>
         </table>
-        <a class="btn btn-success" href="{{ path('duck_duck_new') }}">Create new</a>
+        <a class="btn btn-warning" href="{{ path('duck_duck_new') }}">Create new</a>
     </div>
 {% endblock %}
