@@ -3,40 +3,99 @@
 {% block title %}DuckDuck{% endblock %}
 
 {% block body %}
-    <h1>DuckDuck</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ duck_duck.id }}</td>
-            </tr>
-            <tr>
-                <th>Firstname</th>
-                <td>{{ duck_duck.firstname }}</td>
-            </tr>
-            <tr>
-                <th>Lastname</th>
-                <td>{{ duck_duck.lastname }}</td>
-            </tr>
-            <tr>
-                <th>Duckname</th>
-                <td>{{ duck_duck.duckname }}</td>
-            </tr>
-            <tr>
-                <th>Email</th>
-                <td>{{ duck_duck.email }}</td>
-            </tr>
-            <tr>
-                <th>Password</th>
-                <td>{{ duck_duck.password }}</td>
-            </tr>
-        </tbody>
-    </table>
-    {% if is_granted('ROLE_ADMIN') %}
-    <a class=" btn btn-success" href="{{ path('duck_duck_index') }}">back to list</a>
-    {% endif %}
-    <a class=" btn btn-success" href="{{ path('duck_duck_edit', {'id': duck_duck.id}) }}">edit</a>
-
-    {{ include('duck_duck/_delete_form.html.twig') }}
+    <h1 style="text-align: center; font-weight: bold; color: orange">DuckDuck</h1>
+    <div style="justify-content: center; display: flex;">
+        <div class="align-content-center"
+             style="background-color: orange; border-radius:50%; width: 300px; height: 300px">
+            <p style="color: white; font-weight: bold; text-align: center">Id : {{ duck_duck.id }}</p>
+            <p style="color: white; font-weight: bold; text-align: center"><img
+                        style="border-radius:50%; border:2px solid darkgray ; background-color: white" width="100"
+                        height="100" src="{{ duck_duck.image }} "></p>
+            <p style="color: white; font-weight: bold; text-align: center">Prénom : {{ duck_duck.firstname }}</p>
+            <p style="color: white; font-weight: bold; text-align: center">Nom : {{ duck_duck.lastname }}</p>
+            <p style="color: white; font-weight: bold; text-align: center">Pseudo : {{ duck_duck.duckname }}</p>
+        </div>
+    </div>
+    <div class="container">
+        {% for quack in duck_duck.quacks %}
+            <div class="card card-body mb-3 " style="border-radius: 0.9% !important;">
+                <div class="card-header" style="background-color: darkgray !important;">
+                    <a href="{{ path('duck_duck_show', {'id': quack.author.id}) }}"><img
+                                style="border-radius:50%; background-color: white" width="100" height="100"
+                                src="{{ quack.author.image }}"></a>
+                    <p>
+                        <i class="far fa-comment" style="color: white"></i>
+                        <small class="text-muted" style="color:white !important;"> {{ quack.author.duckname }} à
+                            écrit le :{{ quack.createdAt ? quack.createdAt|date('Y-m-d H:i:s') : '' }}</small>
+                    </p>
+                </div>
+                <div class="card-body">
+                    <p class="card-text" style="color:darkgrey !important;">{{ quack.content }}</p>
+                </div>
+                <img src="{{ quack.image }}" class="card-img-top">
+                {% if quack.tags is not null %}
+                    <div class="card" style="padding-top: 10px">
+                        <p style="color:orange; font-weight: bold; margin-left: 10px"> Tags :
+                            {% for tag in quack.tags %}
+                                <a class="btn-sm btn-info" href="{{ path('quack_tags',{'tag': tag }) }}">
+                                    <i class="fas fa-tag" style=" margin-left: 10px"></i> {{ tag }}</a>
+                            {% endfor %}
+                        </p>
+                    </div>
+                {% endif %}
+                <div class="card-footer">
+                    <div class="card" id="collapse_{{ quack.id }}">
+                        {% for comment in quack.children %}
+                            <div class="card-header" style="background-color: lightgrey">
+                                <a href="{{ path('duck_duck_show', {'id': comment.author.id}) }}"><img
+                                            style="border-radius:50%; background-color: white" width="50" height="50"
+                                            src="{{ comment.author.image }}"></a>
+                                <p>
+                                    <i class="far fa-comments" style="color: gray"></i>
+                                    <small class="text-muted"> {{ comment.author.duckname }} à commenté ce post le
+                                        {{ comment.createdAt ? comment.createdAt|date('Y-m-d H:i:s') : '' }}</small>
+                                </p>
+                            </div>
+                            <div class="card-body">
+                                <img src="{{ comment.image }}" with="120" height="120">
+                                <p style="color:darkgrey !important;">{{ comment.content }}</p>
+                            </div>
+                            <div class="card" style="padding-top: 10px">
+                                <p style="color:orange; font-weight: bold; margin-left: 10px"> Tags :
+                                    {% for tag in comment.tags %}
+                                        <a class="btn-sm btn-info" href="{{ path('quack_tags',{'tag': tag }) }}">
+                                            <i class="fas fa-tag" style=" margin-left: 10px"></i> {{ tag }}</a>
+                                    {% endfor %}
+                                </p>
+                            </div>
+                            <div class="card-footer">
+                                <a class="btn btn-warning"
+                                   href="{{ path('quack_show', {'id': comment.id}) }}">show</a>
+                                {% if is_granted('quack_edit', comment) %}
+                                    <a class="btn btn-info"
+                                       href="{{ path('quack_edit', {'id': comment.id}) }}">edit</a>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <a class="btn btn-warning" href="{{ path('quack_show', {'id': quack.id}) }}">show</a>
+                    <a class="btn btn-info" href="{{ path('quack_new_comment', {'parent': quack.id}) }}">add
+                        comment</a>
+                    {% if is_granted('ROLE_USER') and is_granted('quack_edit', quack ) %}
+                        <a class="btn btn-info" href="{{ path('quack_edit', {'id': quack.id}) }}">edit</a>
+                    {% endif %}
+                </div>
+            </div>
+        {% else %}
+            <div class="card-body">
+                <td colspan="4">no records found</td>
+            </div>
+        {% endfor %}
+        {% if is_granted('ROLE_ADMIN') %}
+            <a class=" btn btn-warning" href="{{ path('duck_duck_index') }}">back to list</a>
+        {% endif %}
+        <a class=" btn btn-warning" href="{{ path('duck_duck_edit', {'id': duck_duck.id}) }}">edit</a>
+        {{ include('duck_duck/_delete_form.html.twig') }}
+    </div>
 {% endblock %}

@@ -19,11 +19,17 @@ class QuackController extends AbstractController
 {
     /**
      * @Route("/", name="quack_index", methods={"GET"})
+     * @Route("/tag/{tag}", name="quack_tags", methods={"GET"})
      */
-    public function index(QuackRepository $quackRepository): Response
+    public function index(QuackRepository $quackRepository, $tag = null): Response
     {
+        if ($tag) {
+            $quacks = $quackRepository->findByTag($tag);
+        } else {
+            $quacks = $quackRepository->findBy(['parent' => null]);
+        }
         return $this->render('quack/index.html.twig', [
-            'quacks' => $quackRepository->findBy(['parent' => null]),
+            'quacks' => $quacks,
 
         ]);
     }

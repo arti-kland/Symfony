@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -54,6 +56,11 @@ class DuckDuck implements UserInterface
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $image;
+
+    public function __construct()
+    {
+        $this->quacks = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -124,6 +131,11 @@ class DuckDuck implements UserInterface
      * @Assert\Image(mimeTypes={ "image/jpeg"} )
      */
     private $imageFile;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Quack", mappedBy="author", orphanRemoval=true)
+     */
+    private $quacks;
 
     /**
      * @return mixed
@@ -208,6 +220,37 @@ class DuckDuck implements UserInterface
     public function setImage(?string $image): self
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|self[]
+     */
+    public function getQuacks(): Collection
+    {
+        return $this->quacks;
+    }
+
+    public function addQuack(Quack $quack): self
+    {
+        if (!$this->quacks->contains($quack)) {
+            $this->quacks[] = $quack;
+            $quack->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQuack(Quack $quack): self
+    {
+        if ($this->quacks->contains($quack)) {
+            $this->quacks->removeElement($quack);
+            // set the owning side to null (unless already changed)
+            if ($quack->getAuthor() === $this) {
+                $quack->setAuthor(null);
+            }
+        }
 
         return $this;
     }

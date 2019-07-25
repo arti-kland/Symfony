@@ -44,7 +44,7 @@ class DuckDuckController extends AbstractController
             //Uploader Image
             $file = $duckDuck->getImageFile();
             $fileName = $fileUploader->upload($file);
-            $duckDuck->setImage('/images/'.$fileName);
+            $duckDuck->setImage('/images/' . $fileName);
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($duckDuck);
@@ -76,7 +76,7 @@ class DuckDuckController extends AbstractController
     /**
      * @Route("/{id}/edit", name="duck_duck_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, DuckDuck $duckDuck, UserPasswordEncoderInterface $passwordEncoder,FileUploader $fileUploader): Response
+    public function edit(Request $request, DuckDuck $duckDuck, UserPasswordEncoderInterface $passwordEncoder, FileUploader $fileUploader): Response
     {
         $this->denyAccessUnlessGranted('duck_edit', $duckDuck);
 
@@ -89,7 +89,7 @@ class DuckDuckController extends AbstractController
                 //Uploader Image
                 $file = $duckDuck->getImageFile();
                 $fileName = $fileUploader->upload($file);
-                $duckDuck->setImage('/images/'.$fileName);
+                $duckDuck->setImage('/images/' . $fileName);
                 $this->getDoctrine()->getManager()->flush();
                 $this->addFlash(
                     'info',
@@ -98,8 +98,7 @@ class DuckDuckController extends AbstractController
                 $duckDuck->setImageFile(null);
 
 
-            }
-            else if ($passwordEncoder->isPasswordValid($this->getUser(), $form->get('currentPassword')->getData())) {
+            } else if ($passwordEncoder->isPasswordValid($this->getUser(), $form->get('currentPassword')->getData())) {
                 $duckDuck->setPassword(
                     $passwordEncoder->encodePassword(
                         $duckDuck,
@@ -109,7 +108,7 @@ class DuckDuckController extends AbstractController
                 //Uploader Image
                 $file = $duckDuck->getImageFile();
                 $fileName = $fileUploader->upload($file);
-                $duckDuck->setImage('/images/'.$fileName);
+                $duckDuck->setImage('/images/' . $fileName);
 
                 $this->getDoctrine()->getManager()->flush();
                 $this->addFlash(

@@ -37,7 +37,7 @@ class Quack
 
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\DuckDuck")
+     * @ORM\ManyToOne(targetEntity="App\Entity\DuckDuck", inversedBy="quacks")
      * @ORM\JoinColumn(nullable=false)
      */
     private $author;

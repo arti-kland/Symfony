@@ -31,12 +31,22 @@ class QuackRepository extends ServiceEntityRepository
             ->orWhere('duckduck.duckname LIKE :val')
             ->orWhere('quack.tags LIKE :val')
             ->orWhere('quack.content LIKE :val')
-            ->setParameter('val', "%".$value."%")
+            ->setParameter('val', "%" . $value . "%")
             ->orderBy('quack.id', 'ASC')
             ->setMaxResults(10)
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
+    }
+
+    public function findByTag($tag)
+    {
+        return $this->createQueryBuilder('quack')
+            ->orWhere('quack.tags LIKE :val')
+            ->setParameter('val', "%" . $tag . "%")
+            ->orderBy('quack.id', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
     }
 
 
