@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+
 /**
  * @ORM\Entity(repositoryClass="App\Repository\QuackRepository")
  */
@@ -33,7 +34,6 @@ class Quack
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $image;
-
 
 
     /**
@@ -79,7 +79,6 @@ class Quack
     }
 
 
-
     public function __construct()
     {
         $this->children = new ArrayCollection();
@@ -120,7 +119,7 @@ class Quack
         return $this->image;
     }
 
-    public function setImage( $image): self
+    public function setImage($image): self
     {
         $this->image = $image;
 
@@ -195,4 +194,33 @@ class Quack
 
         return $this;
     }
+
+    /**
+     * Specify data which should be serialized to JSON
+     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->id,
+            'content' => $this->content,
+            'created_at' => $this->createdAt,
+            'auteur' => $this->author,
+            'photo' => $this->image,
+            'tag' => $this->tags,
+            'children' => $this->children,];
+    }
+
+    public function monTableauLight()
+    {
+        return [
+            "id" => $this->id,
+            "content" => $this->content,
+            "photo" => $this->image,
+        ];
+    }
+
 }

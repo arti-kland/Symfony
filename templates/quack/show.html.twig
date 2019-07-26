@@ -4,49 +4,85 @@
 
 {% block body %}
     <div class="container">
-        <h1 class="text-center">Quack</h1>
-
-        <table class="table">
-            <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ quack.id }}</td>
-            </tr>
-            <tr>
-                <th>Content</th>
-                <td>{{ quack.content }}</td>
-            </tr>
-            <tr>
-                <th>CreatedAt</th>
-                <td>{{ quack.createdAt ? quack.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Author Icon</th>
-                <td><img width="100" height="100" src="{{ quack.author.image }}"></td>
-            </tr>
-            <tr>
-                <th>Author</th>
-                <td>{{ quack.author.duckname }}</td>
-            </tr>
-            <tr>
-                <th>Image</th>
-                <td>{{ quack.image }}</td>
-            </tr>
-            <tr>
-                <th>Tags</th>
-                <td>{% for tag in quack.tags %}
-                        {{ tag }}
-                    {% endfor %}</td>
-            </tr>
-            </tbody>
-        </table>
-
-        <a class="btn btn-warning" href="{{ path('quack_index') }}">back to list</a>
-
-        {% if is_granted('ROLE_USER') and is_granted('quack_edit', quack ) %}
-            <a class="btn btn-warning" href="{{ path('quack_edit', {'id': quack.id}) }}">edit</a>
-
-            {{ include('quack/_delete_form.html.twig') }}
+        <h1 class="text-center" style="font-weight: bold; color: orange;">Quack</h1>
+        <div class="card card-body mb-3 " style="border-radius: 0.9% !important;">
+            <div class="card-header" style="background-color: darkgray !important;">
+                <a href="{{ path('duck_duck_show', {'id': quack.author.id}) }}"><img
+                            style="border-radius:50%; background-color: white" width="100" height="100"
+                            src="{{ quack.author.image }}"></a>
+                <p>
+                    <i class="far fa-comment" style="color: white"></i>
+                    <small class="text-muted" style="color:white !important;"> {{ quack.author.duckname }} à
+                        écrit le
+                        {{ quack.createdAt ? quack.createdAt|date('Y-m-d H:i:s') : '' }}</small>
+                </p>
+            </div>
+            <div class="card-body">
+                <p class="card-text" style="color:darkgrey !important;">{{ quack.content }}</p>
+            </div>
+            <a href="{{ path('quack_show', {'id': quack.id}) }}"><img src="{{ quack.image }}" class="card-img-top"></a>
+            {% if quack.tags is not null %}
+                <div class="card" style="padding-top: 10px">
+                    <p style="color:orange; font-weight: bold; margin-left: 10px"> Tags :
+                        {% for tag in quack.tags %}
+                                <a class="btn-sm btn-info" href="{{ path('quack_tags',{'tag': tag }) }}">
+                                    <i class="fas fa-tag" style=" margin-left: 10px"></i> {{ tag }}</a>
+                        {% endfor %}
+                    </p>
+                </div>
+            {% endif %}
+            <div class="card-footer">
+                <div class="card" id="collapse_{{ quack.id }}">
+                    {% for comment in quack.children %}
+                        <div class="card-header" style="background-color: lightgrey">
+                            <a href="{{ path('duck_duck_show', {'id': comment.author.id}) }}"><img
+                                        style="border-radius:50%; background-color: white" width="50"
+                                        height="50" src="{{ comment.author.image }}"></a>
+                            <p>
+                                <i class="far fa-comments" style="color: gray"></i>
+                                <small class="text-muted"> {{ comment.author.duckname }} à commenté ce post le
+                                    {{ comment.createdAt ? comment.createdAt|date('Y-m-d H:i:s') : '' }}</small>
+                            </p>
+                        </div>
+                        <div class="card-body">
+                            <img src="{{ comment.image }}" with="120" height="120">
+                            <p style="color:darkgrey !important;">{{ comment.content }}</p>
+                        </div>
+                        <div class="card" style="padding-top: 10px">
+                            <p style="color:orange; font-weight: bold; margin-left: 10px"> Tags :
+                                {% for tag in comment.tags %}
+                                    {% if tag %}
+                                    <a class="btn-sm btn-info" href="{{ path('quack_tags',{'tag': tag }) }}">
+                                        <i class="fas fa-tag" style=" margin-left: 10px"></i> {{ tag }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            </p>
+                        </div>
+                        <div class="card-footer">
+                            <a class="btn btn-warning"
+                               href="{{ path('quack_show', {'id': comment.id}) }}">show</a>
+                            {% if is_granted('quack_edit', comment) %}
+                                <a class="btn btn-info"
+                                   href="{{ path('quack_edit', {'id': comment.id}) }}">edit</a>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+                <a class="btn btn-warning" href="{{ path('quack_show', {'id': quack.id}) }}">show</a>
+                <a class="btn btn-info" href="{{ path('quack_new_comment', {'parent': quack.id}) }}">add
+                    comment</a>
+                {% if is_granted('ROLE_USER') and is_granted('quack_edit', quack ) %}
+                    <a class="btn btn-info" href="{{ path('quack_edit', {'id': quack.id}) }}">edit</a>
+                {% endif %}
+            </div>
+        </div>
+        {#        {% else %}#}
+        {#        <div class="card-body">#}
+        {#            <td colspan="4">no records found</td>#}
+        {#        </div>#}
+        {% if is_granted('ROLE_USER') %}
+            <a class="btn btn-success" href="{{ path('quack_new') }}">Create new</a>
         {% endif %}
     </div>
+
 {% endblock %}

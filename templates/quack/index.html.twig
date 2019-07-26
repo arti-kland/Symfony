@@ -32,7 +32,7 @@
                     <div class="card-body">
                         <p class="card-text" style="color:darkgrey !important;">{{ quack.content }}</p>
                     </div>
-                    <img src="{{ quack.image }}" class="card-img-top">
+                    <a href="{{ path('quack_show', {'id': quack.id}) }}"><img src="{{ quack.image }}" class="card-img-top"></a>
                     {% if quack.tags is not null %}
                         <div class="card" style="padding-top: 10px">
                             <p style="color:orange; font-weight: bold; margin-left: 10px"> Tags :
